@@ -55,7 +55,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<image>
-						<name>eazybytes/${project.artifactId}</name>
+						<name>lgnakano/${project.artifactId}</name>
 					</image>
 				</configuration>
 			</plugin>
