@@ -3,7 +3,7 @@ version: "3.8"
 services:
 
   configserver:
-    image: eazybytes/configserver:latest
+    image: lgnakano/configserver:latest
     mem_limit: 700m
     ports:
       - "8071:8071"
@@ -11,7 +11,7 @@ services:
      - eazybank
       
   accounts:
-    image: eazybytes/accounts:latest
+    image: lgnakano/accounts:latest
     mem_limit: 700m
     ports:
       - "8080:8080"
@@ -30,7 +30,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
   
   loans:
-    image: eazybytes/loans:latest
+    image: lgnakano/loans:latest
     mem_limit: 700m
     ports:
       - "8090:8090"
@@ -49,7 +49,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
     
   cards:
-    image: eazybytes/cards:latest
+    image: lgnakano/cards:latest
     mem_limit: 700m
     ports:
       - "9000:9000"
