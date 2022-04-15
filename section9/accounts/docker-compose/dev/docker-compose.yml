@@ -3,16 +3,18 @@ version: "3.8"
 services:
 
   configserver:
-    image: eazybytes/configserver:latest
-    mem_limit: 700m
+    image: lgnakano/configserver:latest
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "8071:8071"
     networks:
      - eazybank
    
   eurekaserver:
-    image: eazybytes/eurekaserver:latest
-    mem_limit: 700m
+    image: lgnakano/eurekaserver:latest
     ports:
       - "8070:8070"
     networks:
@@ -20,6 +22,9 @@ services:
     depends_on:
       - configserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 15s
@@ -30,8 +35,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       
   accounts:
-    image: eazybytes/accounts:latest
-    mem_limit: 700m
+    image: lgnakano/accounts:latest
     ports:
       - "8080:8080"
     networks:
@@ -40,6 +44,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -51,8 +58,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
   
   loans:
-    image: eazybytes/loans:latest
-    mem_limit: 700m
+    image: lgnakano/loans:latest
     ports:
       - "8090:8090"
     networks:
@@ -61,6 +67,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -72,8 +81,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
     
   cards:
-    image: eazybytes/cards:latest
-    mem_limit: 700m
+    image: lgnakano/cards:latest
     ports:
       - "9000:9000"
     networks:
@@ -82,6 +90,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s

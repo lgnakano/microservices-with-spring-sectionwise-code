@@ -4,15 +4,21 @@ services:
 
   zipkin:
     image: openzipkin/zipkin
-    mem_limit: 700m
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "9411:9411"
     networks:
      - eazybank
      
   configserver:
-    image: eazybytes/configserver:latest
-    mem_limit: 700m
+    image: lgnakano/configserver:latest
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "8071:8071"
     networks:
@@ -24,8 +30,7 @@ services:
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
    
   eurekaserver:
-    image: eazybytes/eurekaserver:latest
-    mem_limit: 700m
+    image: lgnakano/eurekaserver:latest
     ports:
       - "8070:8070"
     networks:
@@ -33,6 +38,9 @@ services:
     depends_on:
       - configserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 15s
@@ -44,8 +52,7 @@ services:
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
       
   accounts:
-    image: eazybytes/accounts:latest
-    mem_limit: 700m
+    image: lgnakano/accounts:latest
     ports:
       - "8080:8080"
     networks:
@@ -54,6 +61,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -66,8 +76,7 @@ services:
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
   
   loans:
-    image: eazybytes/loans:latest
-    mem_limit: 700m
+    image: lgnakano/loans:latest
     ports:
       - "8090:8090"
     networks:
@@ -76,6 +85,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -88,8 +100,7 @@ services:
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
     
   cards:
-    image: eazybytes/cards:latest
-    mem_limit: 700m
+    image: lgnakano/cards:latest
     ports:
       - "9000:9000"
     networks:
@@ -98,6 +109,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -110,8 +124,7 @@ services:
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
   
   gatewayserver:
-    image: eazybytes/gatewayserver:latest
-    mem_limit: 700m
+    image: lgnakano/gatewayserver:latest
     ports:
       - "8072:8072"
     networks:
@@ -123,6 +136,9 @@ services:
       - loans
       - accounts
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 45s
