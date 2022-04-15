@@ -847,7 +847,7 @@ version: "3.8"
 services:
 
   configserver:
-    image: eazybytes/configserver:latest
+    image: lgnakano/configserver:latest
     deploy:
       resources:
         limits:
@@ -858,7 +858,7 @@ services:
      - eazybank
       
   accounts:
-    image: eazybytes/accounts:latest
+    image: lgnakano/accounts:latest
     ports:
       - "8080:8080"
     networks:
@@ -879,7 +879,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
   
   loans:
-    image: eazybytes/loans:latest
+    image: lgnakano/loans:latest
     ports:
       - "8090:8090"
     networks:
@@ -900,7 +900,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
     
   cards:
-    image: eazybytes/cards:latest
+    image: lgnakano/cards:latest
     ports:
       - "9000:9000"
     networks:
@@ -931,7 +931,7 @@ version: "3.8"
 services:
 
   configserver:
-    image: eazybytes/configserver:latest
+    image: lgnakano/configserver:latest
     deploy:
       resources:
         limits:
@@ -942,7 +942,7 @@ services:
      - eazybank
       
   accounts:
-    image: eazybytes/accounts:latest
+    image: lgnakano/accounts:latest
     ports:
       - "8080:8080"
     networks:
@@ -963,7 +963,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
   
   loans:
-    image: eazybytes/loans:latest
+    image: lgnakano/loans:latest
     ports:
       - "8090:8090"
     networks:
@@ -984,7 +984,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
     
   cards:
-    image: eazybytes/cards:latest
+    image: lgnakano/cards:latest
     ports:
       - "9000:9000"
     networks:
@@ -1015,7 +1015,7 @@ version: "3.8"
 services:
 
   configserver:
-    image: eazybytes/configserver:latest
+    image: lgnakano/configserver:latest
     deploy:
       resources:
         limits:
@@ -1026,7 +1026,7 @@ services:
      - eazybank
       
   accounts:
-    image: eazybytes/accounts:latest
+    image: lgnakano/accounts:latest
     ports:
       - "8080:8080"
     networks:
@@ -1047,7 +1047,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
   
   loans:
-    image: eazybytes/loans:latest
+    image: lgnakano/loans:latest
     ports:
       - "8090:8090"
     networks:
@@ -1068,7 +1068,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
     
   cards:
-    image: eazybytes/cards:latest
+    image: lgnakano/cards:latest
     ports:
       - "9000:9000"
     networks:

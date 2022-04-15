@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: accounts
-        image: eazybytes/accounts:latest
+        image: lgnakano/accounts:latest
         ports:
         - containerPort: 8080
         env:

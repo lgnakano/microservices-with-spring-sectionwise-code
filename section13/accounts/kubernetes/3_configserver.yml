@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: configserver
-        image: eazybytes/configserver:latest
+        image: lgnakano/configserver:latest
         ports:
         - containerPort: 8071
         env:

@@ -466,7 +466,7 @@ version: "3.8"
 services:
 
   configserver:
-    image: eazybytes/configserver:latest
+    image: lgnakano/configserver:latest
     deploy:
       resources:
         limits:
@@ -477,7 +477,7 @@ services:
      - eazybank
    
   eurekaserver:
-    image: eazybytes/eurekaserver:latest
+    image: lgnakano/eurekaserver:latest
     ports:
       - "8070:8070"
     networks:
@@ -498,7 +498,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       
   accounts:
-    image: eazybytes/accounts:latest
+    image: lgnakano/accounts:latest
     ports:
       - "8080:8080"
     networks:
@@ -521,7 +521,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
   
   loans:
-    image: eazybytes/loans:latest
+    image: lgnakano/loans:latest
     ports:
       - "8090:8090"
     networks:
@@ -544,7 +544,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
     
   cards:
-    image: eazybytes/cards:latest
+    image: lgnakano/cards:latest
     ports:
       - "9000:9000"
     networks:
@@ -577,7 +577,7 @@ version: "3.8"
 services:
 
   configserver:
-    image: eazybytes/configserver:latest
+    image: lgnakano/configserver:latest
     deploy:
       resources:
         limits:
@@ -588,7 +588,7 @@ services:
      - eazybank
    
   eurekaserver:
-    image: eazybytes/eurekaserver:latest
+    image: lgnakano/eurekaserver:latest
     ports:
       - "8070:8070"
     networks:
@@ -609,7 +609,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       
   accounts:
-    image: eazybytes/accounts:latest
+    image: lgnakano/accounts:latest
     ports:
       - "8080:8080"
     networks:
@@ -632,7 +632,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
   
   loans:
-    image: eazybytes/loans:latest
+    image: lgnakano/loans:latest
     ports:
       - "8090:8090"
     networks:
@@ -655,7 +655,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
     
   cards:
-    image: eazybytes/cards:latest
+    image: lgnakano/cards:latest
     ports:
       - "9000:9000"
     networks:
@@ -688,7 +688,7 @@ version: "3.8"
 services:
 
   configserver:
-    image: eazybytes/configserver:latest
+    image: lgnakano/configserver:latest
     deploy:
       resources:
         limits:
@@ -699,7 +699,7 @@ services:
      - eazybank
    
   eurekaserver:
-    image: eazybytes/eurekaserver:latest
+    image: lgnakano/eurekaserver:latest
     ports:
       - "8070:8070"
     networks:
@@ -720,7 +720,7 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       
   accounts:
-    image: eazybytes/accounts:latest
+    image: lgnakano/accounts:latest
     ports:
       - "8080:8080"
     networks:
@@ -743,7 +743,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
   
   loans:
-    image: eazybytes/loans:latest
+    image: lgnakano/loans:latest
     ports:
       - "8090:8090"
     networks:
@@ -766,7 +766,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
     
   cards:
-    image: eazybytes/cards:latest
+    image: lgnakano/cards:latest
     ports:
       - "9000:9000"
     networks:

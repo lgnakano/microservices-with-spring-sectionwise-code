@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: eurekaserver
-        image: eazybytes/eurekaserver:latest
+        image: lgnakano/eurekaserver:latest
         ports:
         - containerPort: 8070
         env:

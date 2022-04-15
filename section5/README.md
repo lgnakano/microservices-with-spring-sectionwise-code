@@ -95,7 +95,7 @@ version: "3.8"
 services:
 
   accounts:
-    image: eazybytes/accounts:latest
+    image: lgnakano/accounts:latest
     deploy:
       resources:
         limits:
@@ -106,7 +106,7 @@ services:
       - eazybank-network
     
   loans:
-    image: eazybytes/loans:latest
+    image: lgnakano/loans:latest
     deploy:
       resources:
         limits:
@@ -117,7 +117,7 @@ services:
       - eazybank-network
     
   cards:
-    image: eazybytes/cards:latest
+    image: lgnakano/cards:latest
     deploy:
       resources:
         limits:

@@ -251,7 +251,7 @@ services:
      - eazybank
 
   configserver:
-    image: eazybytes/configserver:latest
+    image: lgnakano/configserver:latest
     deploy:
       resources:
         limits:
@@ -267,7 +267,7 @@ services:
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
       
   eurekaserver:
-    image: eazybytes/eurekaserver:latest
+    image: lgnakano/eurekaserver:latest
     ports:
       - "8070:8070"
     networks:
@@ -289,7 +289,7 @@ services:
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
 
   accounts:
-    image: eazybytes/accounts:latest
+    image: lgnakano/accounts:latest
     ports:
       - "8080:8080"
     networks:
@@ -313,7 +313,7 @@ services:
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
   
   loans:
-    image: eazybytes/loans:latest
+    image: lgnakano/loans:latest
     ports:
       - "8090:8090"
     networks:
@@ -337,7 +337,7 @@ services:
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
     
   cards:
-    image: eazybytes/cards:latest
+    image: lgnakano/cards:latest
     ports:
       - "9000:9000"
     networks:
@@ -361,7 +361,7 @@ services:
       SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
       
   gatewayserver:
-    image: eazybytes/gatewayserver:latest
+    image: lgnakano/gatewayserver:latest
     ports:
       - "8072:8072"
     networks:

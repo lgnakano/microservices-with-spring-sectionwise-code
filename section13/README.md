@@ -78,7 +78,7 @@ Below are the key steps that we will be following in this section13 repository,
       spec:
         containers:
         - name: configserver
-          image: eazybytes/configserver:latest
+          image: lgnakano/configserver:latest
           ports:
           - containerPort: 8071
           env:
@@ -126,7 +126,7 @@ Below are the key steps that we will be following in this section13 repository,
       spec:
         containers:
         - name: eurekaserver
-          image: eazybytes/eurekaserver:latest
+          image: lgnakano/eurekaserver:latest
           ports:
           - containerPort: 8070
           env:
@@ -180,7 +180,7 @@ Below are the key steps that we will be following in this section13 repository,
       spec:
         containers:
         - name: accounts
-          image: eazybytes/accounts:latest
+          image: lgnakano/accounts:latest
           ports:
           - containerPort: 8080
           env:
