@@ -4,7 +4,10 @@ services:
 
   accounts:
     image: eazybytes/accounts:latest
-    mem_limit: 700m
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "8080:8080"
     networks:
@@ -12,7 +15,10 @@ services:
     
   loans:
     image: eazybytes/loans:latest
-    mem_limit: 700m
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "8090:8090"
     networks:
@@ -20,7 +26,10 @@ services:
     
   cards:
     image: eazybytes/cards:latest
-    mem_limit: 700m
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "9000:9000"
     networks:
