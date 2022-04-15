@@ -67,8 +67,8 @@ ENTRYPOINT ["java","-jar","/accounts-0.0.1-SNAPSHOT.jar"]
 	</plugins>
 </build>  
 
-```	
--  Now run the maven command **"mvn spring-boot:build-image"** for both **loans** & **cards** microservices using command line tool from the folder location where pom.xml is present. This will generate the docker images for both **loans** & **cards** microservices using **Buildpacks**. The same can be validated by running the docker command **"docker images"** which will list all the docker images.
+```
+- Now run the maven command **"mvn spring-boot:build-image"** for both **loans** & **cards** microservices using command line tool from the folder location where pom.xml is present. This will generate the docker images for both **loans** & **cards** microservices using **Buildpacks**. The same can be validated by running the docker command **"docker images"** which will list all the docker images.
 - Now create the **loans** microservice container from the docker image generated in the above step by running the docker command **"docker run -p 8090:8090 eazybytes/loans"**. We can validate the docker container created by invoking the REST API http://localhost:8090/myLoans through Postman by passing the below request in JSON format. You should get the response from the loans microservice docker container created in this step.
 ```json
 {
@@ -96,7 +96,10 @@ services:
 
   accounts:
     image: eazybytes/accounts:latest
-    mem_limit: 700m
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "8080:8080"
     networks:
@@ -104,7 +107,10 @@ services:
     
   loans:
     image: eazybytes/loans:latest
-    mem_limit: 700m
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "8090:8090"
     networks:
@@ -112,7 +118,10 @@ services:
     
   cards:
     image: eazybytes/cards:latest
-    mem_limit: 700m
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "9000:9000"
     networks:
