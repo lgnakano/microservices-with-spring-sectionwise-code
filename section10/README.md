@@ -332,7 +332,10 @@ services:
 
   configserver:
     image: eazybytes/configserver:latest
-    mem_limit: 700m
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "8071:8071"
     networks:
@@ -340,7 +343,6 @@ services:
    
   eurekaserver:
     image: eazybytes/eurekaserver:latest
-    mem_limit: 700m
     ports:
       - "8070:8070"
     networks:
@@ -348,6 +350,9 @@ services:
     depends_on:
       - configserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 15s
@@ -359,7 +364,6 @@ services:
       
   accounts:
     image: eazybytes/accounts:latest
-    mem_limit: 700m
     ports:
       - "8080:8080"
     networks:
@@ -368,6 +372,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -380,7 +387,6 @@ services:
   
   loans:
     image: eazybytes/loans:latest
-    mem_limit: 700m
     ports:
       - "8090:8090"
     networks:
@@ -389,6 +395,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -401,7 +410,6 @@ services:
     
   cards:
     image: eazybytes/cards:latest
-    mem_limit: 700m
     ports:
       - "9000:9000"
     networks:
@@ -410,6 +418,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -422,7 +433,6 @@ services:
    
   gatewayserver:
     image: eazybytes/gatewayserver:latest
-    mem_limit: 700m
     ports:
       - "8072:8072"
     networks:
@@ -434,6 +444,9 @@ services:
       - loans
       - accounts
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 45s
@@ -456,7 +469,10 @@ services:
 
   configserver:
     image: eazybytes/configserver:latest
-    mem_limit: 700m
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "8071:8071"
     networks:
@@ -464,7 +480,6 @@ services:
    
   eurekaserver:
     image: eazybytes/eurekaserver:latest
-    mem_limit: 700m
     ports:
       - "8070:8070"
     networks:
@@ -472,6 +487,9 @@ services:
     depends_on:
       - configserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 15s
@@ -483,7 +501,6 @@ services:
       
   accounts:
     image: eazybytes/accounts:latest
-    mem_limit: 700m
     ports:
       - "8080:8080"
     networks:
@@ -492,6 +509,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -504,7 +524,6 @@ services:
   
   loans:
     image: eazybytes/loans:latest
-    mem_limit: 700m
     ports:
       - "8090:8090"
     networks:
@@ -513,6 +532,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -525,7 +547,6 @@ services:
     
   cards:
     image: eazybytes/cards:latest
-    mem_limit: 700m
     ports:
       - "9000:9000"
     networks:
@@ -534,6 +555,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -546,7 +570,6 @@ services:
   
   gatewayserver:
     image: eazybytes/gatewayserver:latest
-    mem_limit: 700m
     ports:
       - "8072:8072"
     networks:
@@ -558,6 +581,9 @@ services:
       - loans
       - accounts
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 45s
@@ -580,7 +606,10 @@ services:
 
   configserver:
     image: eazybytes/configserver:latest
-    mem_limit: 700m
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "8071:8071"
     networks:
@@ -588,7 +617,6 @@ services:
    
   eurekaserver:
     image: eazybytes/eurekaserver:latest
-    mem_limit: 700m
     ports:
       - "8070:8070"
     networks:
@@ -596,6 +624,9 @@ services:
     depends_on:
       - configserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 15s
@@ -607,7 +638,6 @@ services:
       
   accounts:
     image: eazybytes/accounts:latest
-    mem_limit: 700m
     ports:
       - "8080:8080"
     networks:
@@ -616,6 +646,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -628,7 +661,6 @@ services:
   
   loans:
     image: eazybytes/loans:latest
-    mem_limit: 700m
     ports:
       - "8090:8090"
     networks:
@@ -637,6 +669,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -649,7 +684,6 @@ services:
     
   cards:
     image: eazybytes/cards:latest
-    mem_limit: 700m
     ports:
       - "9000:9000"
     networks:
@@ -658,6 +692,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -670,7 +707,6 @@ services:
   
   gatewayserver:
     image: eazybytes/gatewayserver:latest
-    mem_limit: 700m
     ports:
       - "8072:8072"
     networks:
@@ -682,6 +718,9 @@ services:
       - loans
       - accounts
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 45s

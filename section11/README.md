@@ -22,7 +22,7 @@ inside our microservices network.
 ### \accounts\src\main\java\com\eazybytes\accounts\controller\AccountsController.java
   
 ```java
-  /**
+  /*
  * 
  */
 package com.eazybytes.accounts.controller;
@@ -313,8 +313,8 @@ public class CardsController {
 - Now in order to push all the loggers into Rabbit MQ asynchronously, open the **pom.xml** of all the microservices **accounts, loans, cards, configserver, eurekaserver,           gatewayserver** and make sure to add the below required dependency of **Rabbit MQ** in all of them. 
   ```xml
    <dependency>	
-	<groupId>org.springframework.amqp</groupId>
-	<artifactId>spring-rabbit</artifactId>
+        <groupId>org.springframework.amqp</groupId>
+	    <artifactId>spring-rabbit</artifactId>
    </dependency>
   ```
 - Now in order to setup a Rabbit MQ server, run the docker command **'docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management'**. This docker command will start the Rabbit MQ related docker container using the provided docker image.
@@ -351,7 +351,10 @@ services:
 
   zipkin:
     image: openzipkin/zipkin
-    mem_limit: 700m
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "9411:9411"
     networks:
@@ -359,7 +362,10 @@ services:
   
   configserver:
     image: eazybytes/configserver:latest
-    mem_limit: 700m
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "8071:8071"
     networks:
@@ -372,7 +378,6 @@ services:
    
   eurekaserver:
     image: eazybytes/eurekaserver:latest
-    mem_limit: 700m
     ports:
       - "8070:8070"
     networks:
@@ -380,6 +385,9 @@ services:
     depends_on:
       - configserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 15s
@@ -392,7 +400,6 @@ services:
       
   accounts:
     image: eazybytes/accounts:latest
-    mem_limit: 700m
     ports:
       - "8080:8080"
     networks:
@@ -401,6 +408,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -414,7 +424,6 @@ services:
   
   loans:
     image: eazybytes/loans:latest
-    mem_limit: 700m
     ports:
       - "8090:8090"
     networks:
@@ -423,6 +432,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -436,7 +448,6 @@ services:
     
   cards:
     image: eazybytes/cards:latest
-    mem_limit: 700m
     ports:
       - "9000:9000"
     networks:
@@ -445,6 +456,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -458,7 +472,6 @@ services:
    
   gatewayserver:
     image: eazybytes/gatewayserver:latest
-    mem_limit: 700m
     ports:
       - "8072:8072"
     networks:
@@ -470,6 +483,9 @@ services:
       - loans
       - accounts
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 45s
@@ -492,7 +508,10 @@ services:
 
   zipkin:
     image: openzipkin/zipkin
-    mem_limit: 700m
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "9411:9411"
     networks:
@@ -500,7 +519,10 @@ services:
      
   configserver:
     image: eazybytes/configserver:latest
-    mem_limit: 700m
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "8071:8071"
     networks:
@@ -513,7 +535,6 @@ services:
    
   eurekaserver:
     image: eazybytes/eurekaserver:latest
-    mem_limit: 700m
     ports:
       - "8070:8070"
     networks:
@@ -521,6 +542,9 @@ services:
     depends_on:
       - configserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 15s
@@ -533,7 +557,6 @@ services:
       
   accounts:
     image: eazybytes/accounts:latest
-    mem_limit: 700m
     ports:
       - "8080:8080"
     networks:
@@ -542,6 +565,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -555,7 +581,6 @@ services:
   
   loans:
     image: eazybytes/loans:latest
-    mem_limit: 700m
     ports:
       - "8090:8090"
     networks:
@@ -564,6 +589,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -577,7 +605,6 @@ services:
     
   cards:
     image: eazybytes/cards:latest
-    mem_limit: 700m
     ports:
       - "9000:9000"
     networks:
@@ -586,6 +613,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -599,7 +629,6 @@ services:
   
   gatewayserver:
     image: eazybytes/gatewayserver:latest
-    mem_limit: 700m
     ports:
       - "8072:8072"
     networks:
@@ -611,6 +640,9 @@ services:
       - loans
       - accounts
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 45s
@@ -633,7 +665,10 @@ services:
 
   zipkin:
     image: openzipkin/zipkin
-    mem_limit: 700m
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "9411:9411"
     networks:
@@ -641,7 +676,10 @@ services:
      
   configserver:
     image: eazybytes/configserver:latest
-    mem_limit: 700m
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     ports:
       - "8071:8071"
     networks:
@@ -654,7 +692,6 @@ services:
    
   eurekaserver:
     image: eazybytes/eurekaserver:latest
-    mem_limit: 700m
     ports:
       - "8070:8070"
     networks:
@@ -662,6 +699,9 @@ services:
     depends_on:
       - configserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 15s
@@ -674,7 +714,6 @@ services:
       
   accounts:
     image: eazybytes/accounts:latest
-    mem_limit: 700m
     ports:
       - "8080:8080"
     networks:
@@ -683,6 +722,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -696,7 +738,6 @@ services:
   
   loans:
     image: eazybytes/loans:latest
-    mem_limit: 700m
     ports:
       - "8090:8090"
     networks:
@@ -705,6 +746,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -718,7 +762,6 @@ services:
     
   cards:
     image: eazybytes/cards:latest
-    mem_limit: 700m
     ports:
       - "9000:9000"
     networks:
@@ -727,6 +770,9 @@ services:
       - configserver
       - eurekaserver
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 30s
@@ -740,7 +786,6 @@ services:
   
   gatewayserver:
     image: eazybytes/gatewayserver:latest
-    mem_limit: 700m
     ports:
       - "8072:8072"
     networks:
@@ -752,6 +797,9 @@ services:
       - loans
       - accounts
     deploy:
+      resources:
+        limits:
+          memory: 700m
       restart_policy:
         condition: on-failure
         delay: 45s
