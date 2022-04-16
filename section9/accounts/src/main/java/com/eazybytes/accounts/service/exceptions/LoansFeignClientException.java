@@ -1,8 +1,11 @@
 package com.eazybytes.accounts.service.exceptions;
 
-public class LoansFeignClientException extends Throwable {
-    public String message;
-    public LoansFeignClientException(String message) {
-        this.message = message;
+import feign.FeignException;
+import feign.Request;
+
+public class LoansFeignClientException extends FeignException.ServiceUnavailable {
+
+    public LoansFeignClientException(String message, Request request, byte[] data) {
+        super(message, request, data);
     }
 }

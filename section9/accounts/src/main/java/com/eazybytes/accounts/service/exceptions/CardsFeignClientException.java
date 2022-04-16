@@ -1,8 +1,10 @@
 package com.eazybytes.accounts.service.exceptions;
 
-public class CardsFeignClientException extends Throwable {
-    public String message;
-    public CardsFeignClientException(String message) {
-        this.message = message;
+import feign.FeignException;
+import feign.Request;
+
+public class CardsFeignClientException extends FeignException.ServiceUnavailable{
+    public CardsFeignClientException(String message, Request request, byte[] data) {
+        super(message, request, data);
     }
 }
