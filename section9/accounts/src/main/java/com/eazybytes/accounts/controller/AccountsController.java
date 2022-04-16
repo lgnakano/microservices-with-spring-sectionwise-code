@@ -72,7 +72,7 @@ public class AccountsController {
 	@PostMapping("/myCustomerDetails")
 //	@CircuitBreaker(name = "detailsForCustomerSupportApp", fallbackMethod = "myCustomerDetailsFallBack")
 	@Retry(name = "retryForCustomerDetails"
-//			, fallbackMethod = "myCustomerDetailsFallBack"
+			, fallbackMethod = "myCustomerDetailsFallBack"
 	)
 	public CustomerDetails myCustomerDetails(@RequestBody Customer customer) throws LoansFeignClientException, CardsFeignClientException {
 		Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId());
@@ -100,21 +100,21 @@ public class AccountsController {
 	}
 	
 	private CustomerDetails myCustomerDetailsFallBack(Customer customer, Throwable t) {
-		System.out.println(t.getMessage());
-		System.out.println(t.getClass());
-		log.info(t.getMessage());
-		for(StackTraceElement ste:
-				t.getStackTrace()) {
-			log.info(ste.toString());
-		}
+//		System.out.println(t.getMessage());
+//		System.out.println(t.getClass());
+//		log.info(t.getMessage());
+//		for(StackTraceElement ste:
+//				t.getStackTrace()) {
+//			log.info(ste.toString());
+//		}
 		Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId());
 		CustomerDetails customerDetails = new CustomerDetails();
 		customerDetails.setAccounts(accounts);
-		if (t.getClass() == CardsFeignClientException.class) {
+//		if (t.getClass() == CardsFeignClientException.class) {
 			customerDetails.setLoans(loansFeignClient.getLoansDetails(customer));
-		} else if (t.getClass() == LoansFeignClientException.class) {
-			customerDetails.setCards(cardsFeignClient.getCardDetails(customer));
-		}
+//		} else if (t.getClass() == LoansFeignClientException.class) {
+//			customerDetails.setCards(cardsFeignClient.getCardDetails(customer));
+//		}
 
 		return customerDetails;
 
