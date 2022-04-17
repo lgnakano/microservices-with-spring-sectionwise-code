@@ -76,11 +76,11 @@ public class AccountsController {
 	
 	@CircuitBreaker(name = "detailsForCustomerSupportApp",fallbackMethod="myCustomerDetailsFallBack")
 	@Retry(name = "retryForCustomerDetails", fallbackMethod = "myCustomerDetailsFallBack")
-	public CustomerDetails myCustomerDetails(@RequestHeader("eazybank-correlation-id") String correlationid,@RequestBody Customer customer) {
+	public CustomerDetails myCustomerDetails(@RequestHeader("eazybank-correlation-id") String correlationId, @RequestBody Customer customer) {
 		Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId());
 		List<Loans> loans;
 		try {
-			loans = loansFeignClient.getLoansDetails(correlationid, customer);
+			loans = loansFeignClient.getLoansDetails(correlationId, customer);
 		} catch (FeignException.ServiceUnavailable e) {
 			e.printStackTrace();
 			throw new LoansFeignClientException(e.getMessage(), e.request(),
@@ -88,7 +88,7 @@ public class AccountsController {
 		}
 		List<Cards> cards;
 		try {
-			cards = cardsFeignClient.getCardDetails(correlationid, customer);
+			cards = cardsFeignClient.getCardDetails(correlationId, customer);
 		} catch (FeignException.ServiceUnavailable e) {
 			e.printStackTrace();
 			throw new CardsFeignClientException(e.getMessage(), e.request(),

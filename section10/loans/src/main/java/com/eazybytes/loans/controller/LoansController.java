@@ -36,14 +36,9 @@ public class LoansController {
 	LoansServiceConfig loansConfig;
 
 	@PostMapping("/myLoans")
-	public List<Loans> getLoansDetails(@RequestHeader("eazybank-correlation-id") String correlationid,@RequestBody Customer customer) {
+	public List<Loans> getLoansDetails(@RequestHeader("eazybank-correlation-id") String correlationId, @RequestBody Customer customer) {
 		System.out.println("Invoking Loans Microservice");
-		List<Loans> loans = loansRepository.findByCustomerIdOrderByStartDtDesc(customer.getCustomerId());
-		if (loans != null) {
-			return loans;
-		} else {
-			return null;
-		}
+		return loansRepository.findByCustomerIdOrderByStartDtDesc(customer.getCustomerId());
 
 	}
 	
@@ -52,8 +47,7 @@ public class LoansController {
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 		Properties properties = new Properties(loansConfig.getMsg(), loansConfig.getBuildVersion(),
 				loansConfig.getMailDetails(), loansConfig.getActiveBranches());
-		String jsonStr = ow.writeValueAsString(properties);
-		return jsonStr;
+		return ow.writeValueAsString(properties);
 	}
 
 }
