@@ -3,8 +3,15 @@
  */
 package com.eazybytes.accounts.controller;
 
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
+import com.eazybytes.accounts.service.exceptions.CardsFeignClientException;
+import com.eazybytes.accounts.service.exceptions.LoansFeignClientException;
+import feign.FeignException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,13 +60,7 @@ public class AccountsController {
 	@PostMapping("/myAccount")
 	public Accounts getAccountDetails(@RequestBody Customer customer) {
 
-		Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId());
-		if (accounts != null) {
-			return accounts;
-		} else {
-			return null;
-		}
-
+		return accountsRepository.findByCustomerId(customer.getCustomerId());
 	}
 	
 	@GetMapping("/account/properties")
@@ -67,8 +68,7 @@ public class AccountsController {
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 		Properties properties = new Properties(accountsConfig.getMsg(), accountsConfig.getBuildVersion(),
 				accountsConfig.getMailDetails(), accountsConfig.getActiveBranches());
-		String jsonStr = ow.writeValueAsString(properties);
-		return jsonStr;
+		return ow.writeValueAsString(properties);
 	}
 	
 	@PostMapping("/myCustomerDetails")
@@ -78,8 +78,22 @@ public class AccountsController {
 	@Retry(name = "retryForCustomerDetails", fallbackMethod = "myCustomerDetailsFallBack")
 	public CustomerDetails myCustomerDetails(@RequestHeader("eazybank-correlation-id") String correlationid,@RequestBody Customer customer) {
 		Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId());
-		List<Loans> loans = loansFeignClient.getLoansDetails(correlationid,customer);
-		List<Cards> cards = cardsFeignClient.getCardDetails(correlationid,customer);
+		List<Loans> loans;
+		try {
+			loans = loansFeignClient.getLoansDetails(correlationid, customer);
+		} catch (FeignException.ServiceUnavailable e) {
+			e.printStackTrace();
+			throw new LoansFeignClientException(e.getMessage(), e.request(),
+					e.responseBody().orElse(ByteBuffer.wrap(new byte[0])).array());
+		}
+		List<Cards> cards;
+		try {
+			cards = cardsFeignClient.getCardDetails(correlationid, customer);
+		} catch (FeignException.ServiceUnavailable e) {
+			e.printStackTrace();
+			throw new CardsFeignClientException(e.getMessage(), e.request(),
+				e.responseBody().orElse(ByteBuffer.wrap(new byte[0])).array());
+		}
 
 		CustomerDetails customerDetails = new CustomerDetails();
 		customerDetails.setAccounts(accounts);
@@ -89,12 +103,23 @@ public class AccountsController {
 		return customerDetails;
 	}
 	
-	private CustomerDetails myCustomerDetailsFallBack(@RequestHeader("eazybank-correlation-id") String correlationid,Customer customer, Throwable t) {
+	private CustomerDetails myCustomerDetailsFallBack(@RequestHeader ("eazybank-correlation-id") String correlationid, Customer customer, Throwable t) {
+		System.out.println(t.getMessage());
+		System.out.println(t.getClass());
+//		log.info(t.getMessage());
+//		for(StackTraceElement ste:
+//				t.getStackTrace()) {
+//			log.info(ste.toString());
+//		}
 		Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId());
-		List<Loans> loans = loansFeignClient.getLoansDetails(correlationid,customer);
 		CustomerDetails customerDetails = new CustomerDetails();
 		customerDetails.setAccounts(accounts);
-		customerDetails.setLoans(loans);
+		if (t.getClass() == CardsFeignClientException.class) {
+			customerDetails.setLoans(loansFeignClient.getLoansDetails(correlationid, customer));
+		} else if (t.getClass() == LoansFeignClientException.class) {
+			customerDetails.setCards(cardsFeignClient.getCardDetails(correlationid, customer));
+		}
+
 		return customerDetails;
 
 	}
