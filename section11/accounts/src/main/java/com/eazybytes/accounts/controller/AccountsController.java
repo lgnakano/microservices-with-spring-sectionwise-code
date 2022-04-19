@@ -47,17 +47,13 @@ import javax.inject.Inject;
 public class AccountsController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AccountsController.class);
-	
-//	@Autowired
+
 	private final AccountsRepository accountsRepository;
 
-//	@Autowired
 	private final AccountsServiceConfig accountsConfig;
 
-//	@Autowired
 	LoansFeignClient loansFeignClient;
 
-//	@Autowired
 	CardsFeignClient cardsFeignClient;
 
 	@Inject
