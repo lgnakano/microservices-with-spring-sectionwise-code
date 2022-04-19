@@ -77,6 +77,7 @@ public class AccountsController {
 	
 	@PostMapping("/myAccount")
 	public Accounts getAccountDetails(@RequestBody Customer customer) {
+		logger.info("myAccount() method started");
 
 		return accountsRepository.findByCustomerId(customer.getCustomerId());
 
@@ -94,12 +95,15 @@ public class AccountsController {
 	@CircuitBreaker(name = "detailsForCustomerSupportApp",fallbackMethod="myCustomerDetailsFallBack")
 	@Retry(name = "retryForCustomerDetails", fallbackMethod = "myCustomerDetailsFallBack")
 	public CustomerDetails myCustomerDetails(@RequestHeader("eazybank-correlation-id") String correlationId, @RequestBody Customer customer) {
+		logger.info("myCustomerDetails() method started");
 		Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId());
 		List<Loans> loans;
 		try {
 			loans = loansFeignClient.getLoansDetails(correlationId, customer);
 		} catch (FeignException.ServiceUnavailable e) {
-			e.printStackTrace();
+			for(StackTraceElement ste: e.getStackTrace()) {
+				logger.info(ste.toString());
+			}
 			throw new LoansFeignClientException(e.getMessage(), e.request(),
 					e.responseBody().orElse(ByteBuffer.wrap(new byte[0])).array());
 		}
@@ -107,7 +111,9 @@ public class AccountsController {
 		try {
 			cards = cardsFeignClient.getCardDetails(correlationId, customer);
 		} catch (FeignException.ServiceUnavailable e) {
-			e.printStackTrace();
+			for(StackTraceElement ste: e.getStackTrace()) {
+				logger.info(ste.toString());
+			}
 			throw new CardsFeignClientException(e.getMessage(), e.request(),
 				e.responseBody().orElse(ByteBuffer.wrap(new byte[0])).array());
 		}
@@ -121,22 +127,24 @@ public class AccountsController {
 	}
 	
 	private CustomerDetails myCustomerDetailsFallBack(@RequestHeader ("eazybank-correlation-id") String correlationid, Customer customer, Throwable t) {
-		System.out.println(t.getMessage());
-		System.out.println(t.getClass());
-//		log.info(t.getMessage());
-//		for(StackTraceElement ste:
-//				t.getStackTrace()) {
-//			log.info(ste.toString());
-//		}
+		logger.info("message in myCustomerDetailsFallback " + t.getMessage());
+		logger.info("exception class is " + t.getClass());
+		logger.info(t.getMessage());
+		for(StackTraceElement ste:
+				t.getStackTrace()) {
+			logger.info(ste.toString());
+		}
 		Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId());
 		CustomerDetails customerDetails = new CustomerDetails();
 		customerDetails.setAccounts(accounts);
 		if (t.getClass() == CardsFeignClientException.class) {
+			logger.info("got a Cards Feign Client Exception, try to get loans");
 			customerDetails.setLoans(loansFeignClient.getLoansDetails(correlationid, customer));
 		} else if (t.getClass() == LoansFeignClientException.class) {
+			logger.debug("got a Loans Feign Client Exception, try to get cards");
 			customerDetails.setCards(cardsFeignClient.getCardDetails(correlationid, customer));
 		}
-
+		logger.info("about to return from myCustomerDetailsFallback");
 		return customerDetails;
 
 	}
