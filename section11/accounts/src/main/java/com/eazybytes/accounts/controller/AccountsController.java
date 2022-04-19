@@ -3,11 +3,15 @@
  */
 package com.eazybytes.accounts.controller;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
+import com.eazybytes.accounts.service.exceptions.CardsFeignClientException;
+import com.eazybytes.accounts.service.exceptions.LoansFeignClientException;
+import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +36,8 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 
+import javax.inject.Inject;
+
 /**
  * @author Eazy Bytes
  *
@@ -42,27 +48,41 @@ public class AccountsController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AccountsController.class);
 	
-	@Autowired
-	private AccountsRepository accountsRepository;
+//	@Autowired
+	private final AccountsRepository accountsRepository;
 
-	@Autowired
-	AccountsServiceConfig accountsConfig;
-	
-	@Autowired
+//	@Autowired
+	private final AccountsServiceConfig accountsConfig;
+
+//	@Autowired
 	LoansFeignClient loansFeignClient;
 
-	@Autowired
+//	@Autowired
 	CardsFeignClient cardsFeignClient;
+
+	@Inject
+	public AccountsController(AccountsRepository accountsRepository,
+							  AccountsServiceConfig accountsConfig,
+							  LoansFeignClient loansFeignClient,
+							  CardsFeignClient cardsFeignClient) {
+		Assert.notNull(accountsRepository, "AccountsRepository should not be null");
+		this.accountsRepository = accountsRepository;
+
+		Assert.notNull(accountsConfig, "AccountsConfig should not be null");
+		this.accountsConfig = accountsConfig;
+
+		Assert.notNull(loansFeignClient, "LoansFeignClient should not be null");
+		this.loansFeignClient = loansFeignClient;
+
+		Assert.notNull(cardsFeignClient, "CardsFeignClient should not be null");
+		this.cardsFeignClient = cardsFeignClient;
+
+	}
 	
 	@PostMapping("/myAccount")
 	public Accounts getAccountDetails(@RequestBody Customer customer) {
 
-		Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId());
-		if (accounts != null) {
-			return accounts;
-		} else {
-			return null;
-		}
+		return accountsRepository.findByCustomerId(customer.getCustomerId());
 
 	}
 	
@@ -71,18 +91,30 @@ public class AccountsController {
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 		Properties properties = new Properties(accountsConfig.getMsg(), accountsConfig.getBuildVersion(),
 				accountsConfig.getMailDetails(), accountsConfig.getActiveBranches());
-		String jsonStr = ow.writeValueAsString(properties);
-		return jsonStr;
+		return ow.writeValueAsString(properties);
 	}
 	
 	@PostMapping("/myCustomerDetails")
 	@CircuitBreaker(name = "detailsForCustomerSupportApp",fallbackMethod="myCustomerDetailsFallBack")
 	@Retry(name = "retryForCustomerDetails", fallbackMethod = "myCustomerDetailsFallBack")
-	public CustomerDetails myCustomerDetails(@RequestHeader("eazybank-correlation-id") String correlationid,@RequestBody Customer customer) {
-		logger.info("myCustomerDetails() method started");
+	public CustomerDetails myCustomerDetails(@RequestHeader("eazybank-correlation-id") String correlationId, @RequestBody Customer customer) {
 		Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId());
-		List<Loans> loans = loansFeignClient.getLoansDetails(correlationid,customer);
-		List<Cards> cards = cardsFeignClient.getCardDetails(correlationid,customer);
+		List<Loans> loans;
+		try {
+			loans = loansFeignClient.getLoansDetails(correlationId, customer);
+		} catch (FeignException.ServiceUnavailable e) {
+			e.printStackTrace();
+			throw new LoansFeignClientException(e.getMessage(), e.request(),
+					e.responseBody().orElse(ByteBuffer.wrap(new byte[0])).array());
+		}
+		List<Cards> cards;
+		try {
+			cards = cardsFeignClient.getCardDetails(correlationId, customer);
+		} catch (FeignException.ServiceUnavailable e) {
+			e.printStackTrace();
+			throw new CardsFeignClientException(e.getMessage(), e.request(),
+				e.responseBody().orElse(ByteBuffer.wrap(new byte[0])).array());
+		}
 
 		CustomerDetails customerDetails = new CustomerDetails();
 		customerDetails.setAccounts(accounts);
@@ -92,12 +124,23 @@ public class AccountsController {
 		return customerDetails;
 	}
 	
-	private CustomerDetails myCustomerDetailsFallBack(@RequestHeader("eazybank-correlation-id") String correlationid,Customer customer, Throwable t) {
+	private CustomerDetails myCustomerDetailsFallBack(@RequestHeader ("eazybank-correlation-id") String correlationid, Customer customer, Throwable t) {
+		System.out.println(t.getMessage());
+		System.out.println(t.getClass());
+//		log.info(t.getMessage());
+//		for(StackTraceElement ste:
+//				t.getStackTrace()) {
+//			log.info(ste.toString());
+//		}
 		Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId());
-		List<Loans> loans = loansFeignClient.getLoansDetails(correlationid,customer);
 		CustomerDetails customerDetails = new CustomerDetails();
 		customerDetails.setAccounts(accounts);
-		customerDetails.setLoans(loans);
+		if (t.getClass() == CardsFeignClientException.class) {
+			customerDetails.setLoans(loansFeignClient.getLoansDetails(correlationid, customer));
+		} else if (t.getClass() == LoansFeignClientException.class) {
+			customerDetails.setCards(cardsFeignClient.getCardDetails(correlationid, customer));
+		}
+
 		return customerDetails;
 
 	}
