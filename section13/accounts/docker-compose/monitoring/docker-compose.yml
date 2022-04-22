@@ -12,7 +12,7 @@ services:
     networks:
      - eazybank
     depends_on:
-      - prometheus  
+      - prometheus
 
   prometheus:
    image: prom/prometheus:latest
